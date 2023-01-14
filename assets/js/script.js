@@ -26,9 +26,21 @@ async function getStatus(e) {
     // has been successful and the "ok" property will be set to True.
 
     if (response.ok) {
-        console.log(data); 
+        displayStatus(data); 
         // or use dot notation to drill down for specific result like console.log(data.expiry) to get the API Key expiry date
     }
 
 }
 
+function displayStatus(data) {
+
+    let heading = "API KEY status";
+    let results = `Your key is valid until ${data.expiry}`;
+    // `<div>Your key is valid until</div>`;
+    // 
+    // results += `<div class="key-status">${data.expiry}</div>`;
+
+    document.getElementById("resultsModalTitle").innerText = heading;
+    document.getElementById("results-content").innerHTML = results;
+    resultsModal.show();
+}
