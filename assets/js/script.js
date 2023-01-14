@@ -57,6 +57,10 @@ async function getStatus(e) {
 function displayErrors(data) {
     let heading = `JSHint Results for ${data.file}`;
 
+    for (let entry of form.entries()) {
+        console.log(entry);
+    }
+
     if (data.total_errors === 0) {
         results = `<div class="no-errors">No Errors Reported!</div>`;
     } else {
@@ -67,6 +71,10 @@ function displayErrors(data) {
             results += `<div class="error">${error.error}</div>`;
         }
     }
+
+    document.getElementById("resultsModalTitle").innerText = heading;
+    document.getElementById("results-content").innerHTML = results;
+    resultsModal.show();
 }
 
 function displayStatus(data) {
