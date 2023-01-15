@@ -10,7 +10,7 @@ document.getElementById("status").addEventListener("click", e => getStatus(e));
 document.getElementById("submit").addEventListener("click", e => postForm(e));
 
 async function postForm(e) {
-    const form = new FormData(document.getElementById("checksform"));
+    const form = processOptions(new FormData(document.getElementById("checksform")));
 
     const response = await fetch(API_URL, {
                         method: "POST",
@@ -25,7 +25,7 @@ async function postForm(e) {
         displayErrors(data);
     } else {
         throw new Error(data.error);
-    };
+    }
 }
 
 //Asynchronous function - to handle a promise, wrap the promises in an async function and await the promise coming true.
@@ -54,19 +54,32 @@ async function getStatus(e) {
 
 }
 
-function displayErrors(data) {
-    let heading = `JSHint Results for ${data.file}`;
+function processOptions (form) {
+    let optArray = [];
 
     for (let entry of form.entries()) {
-        console.log(entry);
+        if (entry[0] === "options") {
+        optArray.push(entry[1]);
     }
+}
+    form.delete("options");
+    form.append("options", optArray.join());
+    // Append the key called 'options withthe value being optArray, 
+    // using join() to convert back to a string.  This will append back
+    // a comma-separated string of options to our form.
+    return form;
+}
+
+function displayErrors(data) {
+    let heading = `JSHint Results for ${data.file}`;
+    let results = " ";
 
     if (data.total_errors === 0) {
         results = `<div class="no-errors">No Errors Reported!</div>`;
     } else {
         results =  `<div>Total Errors: <span class="error-count">${data.total_errors}</span></span></div>`;
         for (let error of data.error_list) {
-            results += `<div>At Line <span class="line">${error.line}</span>,  `;
+            results += `<div>At line <span class="line">${error.line}</span>,  `;
             results += `column <span class="columns">${error.col}</span></div>`;
             results += `<div class="error">${error.error}</div>`;
         }
