@@ -24,6 +24,7 @@ async function postForm(e) {
     if (response.ok) {
         displayErrors(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
@@ -49,9 +50,32 @@ async function getStatus(e) {
         displayStatus(data); 
         // or use dot notation to drill down for specific result like console.log(data.expiry) to get the API Key expiry date
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 
+}
+
+function displayException(data) {
+    // populate modal with the exception info and display it
+
+    let heading = "An Exception Occurred";
+    let results = " ";
+
+    // if (data.total_errors === 0) {
+    //     results = `<div class="no-errors">No Exceptions Reported!</div>`;
+    // } else {
+        results =  `<div>The API returned status code <span class="status-code">${data.status_code}</span></div>`;
+        // for (let error of data.error_list) {
+            results += `<div>Error number:<span><strong>${data.error_no}</strong></span></div>`;
+            results += `<div>Error text:<span><strong>${data.error}</strong></span></div>`;
+    //     }
+    // }
+
+    document.getElementById("resultsModalTitle").innerText = heading;
+    document.getElementById("results-content").innerHTML = results;
+    
+    resultsModal.show();
 }
 
 function processOptions (form) {
@@ -87,6 +111,7 @@ function displayErrors(data) {
 
     document.getElementById("resultsModalTitle").innerText = heading;
     document.getElementById("results-content").innerHTML = results;
+
     resultsModal.show();
 }
 
@@ -100,6 +125,7 @@ function displayStatus(data) {
 
     document.getElementById("resultsModalTitle").innerText = heading;
     document.getElementById("results-content").innerHTML = results;
+
     resultsModal.show();
 }
 
